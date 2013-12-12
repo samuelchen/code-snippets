@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*-  coding:utf-8 -*-
 
+''
+Created on 2013-12-12
+@samuelchen
+'''
+
 import sys
 
 _is_window = sys.platform.startswith('win')
