@@ -12,10 +12,19 @@ if not _is_window: import fcntl
 import struct
 
 def get_local_ip():
-    ip = socket.gethostbyname(socket.gethostname())
+    ip = ''
+    if _is_linux:
+        ip = get_linux_ip_address('lo')
+    else:
+        ip = socket.gethostbyname(socket.gethostname())
     return ip
 
 def get_external_ip():
+    ip = ''
+    if _is_linux:
+        ip = get_linux_ip_address('eth0')
+    else:
+        ip = socket.gethostbyname(socket.gethostname())
     return ip
 
 def get_ip_list():
@@ -28,8 +37,6 @@ def get_linux_ip_address(ifname):
     ipString  = socket.inet_ntoa(pktString[20:24])
     return ipString
 
-print get_linux_ip_address('lo')
-print get_linux_ip_address('eth0')
 
 if __name__ == '__main__':
     print '-'*60
