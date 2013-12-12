@@ -4,6 +4,11 @@
 import socket
 import fcntl
 import struct
+import sys
+
+_is_window = sys.platform.startswith('win')
+_is_linux =  sys.platform.startswith('linux')
+_is_mac =  sys.platform.startswith('darwin')
 
 def get_local_ip():
     ip = socket.gethostbyname(socket.gethostname())
@@ -12,7 +17,7 @@ def get_local_ip():
 def get_external_ip():
     return ip
 
-def getIPList():
+def get_ip_list():
     ips = socket.gethostbyname_ex(socket.gethostname())
     return ips
 
@@ -27,7 +32,7 @@ print get_linux_ip_address('eth0')
 
 if __name__ == '__main__':
     print '-'*60
-    print 'getIP()', getIP()
+    print 'get_local_ip()', get_local_ip()
+    print 'get_external_ip()', get_external_ip()
     print '-'*60
-    print 'getIPList()', getIPList()
 
