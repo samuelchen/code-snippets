@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*-  coding:utf-8 -*-
 
-import socket
-import fcntl
-import struct
 import sys
 
 _is_window = sys.platform.startswith('win')
 _is_linux =  sys.platform.startswith('linux')
 _is_mac =  sys.platform.startswith('darwin')
+
+import socket
+if not _is_window: import fcntl
+import struct
 
 def get_local_ip():
     ip = socket.gethostbyname(socket.gethostname())
