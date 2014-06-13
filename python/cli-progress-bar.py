@@ -1,6 +1,7 @@
 #!/bin/usr/env python
 # coding:utf-8
 
+__author__ = 'Samuel Chen <samuel.net@gmail.com>'
 
 import sys
 import time
