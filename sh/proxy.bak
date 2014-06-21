@@ -1,0 +1,18 @@
+#!/usr/bin/expect
+
+set timeout 300
+
+
+
+while (1) {
+    spawn /usr/bin/ssh -qTfnN -p1978 -D 127.0.0.1:7070 -g user@host
+    expect {
+        "*assword" {
+            send "123456\n"
+        }
+    }
+    interact {
+        timeout 20 { send " " }
+        eof { exp_continue }
+    }
+}
