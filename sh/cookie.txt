@@ -1,0 +1,20 @@
+
+
+u = 'telecomadmin'
+p = 'telecomadmin63870586'
+
+# login
+import urllib,urllib2,cookielib
+import base64
+p = base64.b64encode(p)
+s = 'Cookie=UserName:%s:PassWord:%s:Language::id=-1;path=/' % (u, p)
+print s
+cj = cookielib.CookieJar()
+cj.set_cookie()
+url_login = 'http://192.168.1.1/login.cgi'
+opener=urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+opener.addheaders = [('User-agent', 'Opera/9.23')]
+urllib2.install_opener(opener)
+req=urllib2.Request(url_login)
+u=urllib2.urlopen(req)
+print u.read().decode('utf-8').encode('gbk')
