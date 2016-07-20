@@ -68,7 +68,7 @@
         jQuery.fn.bind_modal = function(params) {
             /***********************************************************************
              * usage:
-             * 1. create object(map) with the follow attributes.
+             * - create object(map) with the follow attributes.
              *      .title:         (string) Dialog title.
              *      .warning:       (string) Warning message.
              *      .text_list:     (list of string) Lines of displayed messages.
@@ -85,7 +85,19 @@
              *      .on_ok:         The event function when dialog "OK" button clicked. Accept arg "data" similar to data_map.
              *      .on_cancel:     The event function when dialog "Cancel" button clicked. Accept arg "data" similar to data_map.
              *
-             *  2. call directly with map style object.
+             *  - call directly with map style object.
+             *  - variables:
+             *      @{foo} style variable can be used in string parameters.
+             *      e.g.
+             *      <input type="button" ... data-name="Python Cookbook" data-publisher="O'Reilly" ...>
+             *      <script>
+             *          ...
+             *          obj.title = "Remove book @{name}";
+             *          obj.text_list = [
+             *              "Do you really want to remove book @{name} ?",
+             *              "Publisher: @{publisher}"
+             *          ]
+             *      <script>
              *
              *  example:
              *
@@ -128,43 +140,55 @@
             var on_cancel = params.on_cancel ? params.on_cancel : null;
 
             var self = $(this);
-
             self.attr("data-toggle", "modal");
             self.attr("data-target", "#modal-dialog");
             $.each(data_map, function(key, val) {
                 self.attr("data-" + key, val);
             });
 
+
             $("#modal-dialog").on('shown.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
                 var modal = $(this);
+                var ptn = /@{([^}]+)}/g;
 
-                modal.find('.modal-title').text(title);
+                function modal_replace_vars(text) {
+                    var data = button.data()
+                    var s = text;
+                    var r = null;
+                    while ( null != (r = ptn.exec(text)) ){
+                        s = s.replace(r[0], data[r[1]]);
+                    };
+                    return s;
+                }
+
+                modal.find('.modal-title').text(modal_replace_vars(title));
+
                 if (warning)
-                    modal.find('#modal-warning').html('<p class="alert-warning"><i class="fa fa-warning"></i>' + warning + '</p>');
+                    modal.find('#modal-warning').html('<p class="alert-warning"><i class="fa fa-warning"></i>'
+                                                    + modal_replace_vars(warning) + '</p>');
 
                 $("#modal-texts").html("");
                 $.each(text_list, function(idx, val) {
-                    var line = "<p>" + val + "</p>";
+                    var line = "<p>" + modal_replace_vars(val) + "</p>";
                     $("#modal-texts").append(line);
                 });
 
                 $("#modal-fields").html("");
                 $.each(field_map, function(label, field) {
-                    var lbl = '<label class="control-label">' + label + ': </label> ';
-                    $("#modal-fields").append(lbl).append(field).append("<br/>");
+                    var lbl = '<label class="control-label">' + modal_replace_vars(label) + ': </label> ';
+                    $("#modal-fields").append(lbl).append(modal_replace_vars(field)).append("<br/>");
                 });
                 $.each(hidden_list, function(idx, field) {
-                    $("#modal-fields").append(field);
+                    $("#modal-fields").append(modal_replace_vars(field));
                 });
 
                 modal.find('#modal-ok').click(function (){
-                    var data = button.data();
-                    if (on_ok) on_ok(data);
+                    if (on_ok) on_ok(button.data());
                 });
 
                 modal.find('#modal-cancel').click(function () {
-                    if (on_cancel) on_cancel();
+                    if (on_cancel) on_cancel(button.data());
                 });
             });
         };
