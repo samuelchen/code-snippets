@@ -1,5 +1,5 @@
     <!-- Begin Modal Dialog without Form -->
-    <!-- jqury ui required -->
+    <!-- Include this in your page. Jquery UI required -->
 
     <div  id="modal-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
@@ -81,14 +81,15 @@
              *                          it will become <input type="button" value="submit" data-foo="bar" ...>.
              *                          Then the data could be used in the dialog process as:
              *                          var foo = button.data('foo');   // value of foo now is "bar"
-             *      .on_ok:         The event function when dialog "OK" button clicked.
-             *      .on_cancel:     The event function when dialog "Cancel" button clicked.
+             *                      ! you may also directly set data-myattr="value" for the button.
+             *      .on_ok:         The event function when dialog "OK" button clicked. Accept arg "data" similar to data_map.
+             *      .on_cancel:     The event function when dialog "Cancel" button clicked. Accept arg "data" similar to data_map.
              *
              *  2. call directly with map style object.
              *
              *  example:
              *
-             *          $("#mybutton").bind_modal({
+             *          $("#my-button").bind_modal({
              *              "title": "My Dialog Title",
              *              "warning": "This is a dangerous action",
              *              "text_list": [
@@ -106,10 +107,11 @@
              *              "hidden_list": [
              *                  '<input type="hidden" name="session-id" value="7890">'
              *              ],
-             *              "on_ok": function () {
-             *                      alert("ok clicked");
-             *                  },
-             *              "on_cancel": function() {
+             *              "on_ok": function (data) {
+             *                  var id = data.id;   // "id" must be set on "#my-button" already (e.g. data-id="1234").
+             *                  alert("ok clicked");
+             *              },
+             *              "on_cancel": function(data) {
              *                  alert('cancel clicked');
              *              }
              *          });
@@ -157,7 +159,8 @@
                 });
 
                 modal.find('#modal-ok').click(function (){
-                    if (on_ok) on_ok();
+                    var data = button.data();
+                    if (on_ok) on_ok(data);
                 });
 
                 modal.find('#modal-cancel').click(function () {
