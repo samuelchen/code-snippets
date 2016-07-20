@@ -3,7 +3,15 @@ code-snippets
 
 My code snippets
 
-modal-dialog.html
+### /python
+
+
+### /sh (shell)
+
+
+### /js (javascript)
+
+#### modal-dialog.html
 
 Display a modal dialog with your given message within you page.
 
