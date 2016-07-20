@@ -1,0 +1,171 @@
+    <!-- Begin Modal Dialog without Form -->
+    <!-- jqury ui required -->
+
+    <div  id="modal-dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title text-capitalize">Samome</h4>
+          </div>
+
+          <div class="modal-body">
+            <fieldset>
+                <div id="modal-warning" class="control-group">
+                </div>
+                <div id="modal-texts" class="control-group">
+                </div>
+                <p>&nbsp;</p>
+                <div id="modal-fields" class="control-group">
+                </div>
+            </fieldset>
+          </div>
+
+          <div class="modal-footer">
+            <button id="modal-ok" type="button" class="btn btn-primary bg-warning" data-dismiss="modal">OK</button>
+            <button id="modal-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script language="JavaScript">
+        // --- Begin cross reference token for Django
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        };
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        // --- End csrf token for Django
+
+
+        // --- Begin the modal dialog binding ---
+        jQuery.fn.bind_modal = function(params) {
+            /***********************************************************************
+             * usage:
+             * 1. create object(map) with the follow attributes.
+             *      .title:         (string) Dialog title.
+             *      .warning:       (string) Warning message.
+             *      .text_list:     (list of string) Lines of displayed messages.
+             *      .field_map:     (map of label:field) Display lablel: input-field.
+             *                      label is string. field is html.
+             *      .hidden_list:   (list of hidden fields) Hidden input fields. field is html.
+             *      .data_map:      (map of key:value) The data added to $(this). used for modal dialog data access.
+             *                      e.g.  data_map is { "foo": "bar"}. $("#my-btn").bind_modal(). "#my-btn" is originally
+             *                          <input type="button" value="submit" />. After bind_modal() called,
+             *                          it will become <input type="button" value="submit" data-foo="bar" ...>.
+             *                          Then the data could be used in the dialog process as:
+             *                          var foo = button.data('foo');   // value of foo now is "bar"
+             *      .on_ok:         The event function when dialog "OK" button clicked.
+             *      .on_cancel:     The event function when dialog "Cancel" button clicked.
+             *
+             *  2. call directly with map style object.
+             *
+             *  example:
+             *
+             *          $("#mybutton").bind_modal({
+             *              "title": "My Dialog Title",
+             *              "warning": "This is a dangerous action",
+             *              "text_list": [
+             *                  "Click OK to submit your information",
+             *                  "Click Cancel to abort."
+             *               ],
+             *              "data-map": {
+             *                  "action": "register",
+             *                  "id": "12345"
+             *              },
+             *              "field_map": {
+             *                  "Name": '<input type="text" value="" placeholder="enter your name"/>',
+             *                  "Password": '<span><i class="fa fa-user"></i> <input type="password" placeholder="******"></span>'
+             *              },
+             *              "hidden_list": [
+             *                  '<input type="hidden" name="session-id" value="7890">'
+             *              ],
+             *              "on_ok": function () {
+             *                      alert("ok clicked");
+             *                  },
+             *              "on_cancel": function() {
+             *                  alert('cancel clicked');
+             *              }
+             *          });
+             *
+             */
+
+            var title = params.title ? params.title : 'Dialog';
+            var warning = params.warning ? params.warning : null;
+            var text_list = params.text_list ? params.text_list : ['Modal dailog'];
+            var data_map = params.data_map ? params.data_map : {};
+            var field_map = params.field_map ? params.field_map : {};
+            var hidden_list = params.hidden_list ? params.hidden_list : {};
+            var on_ok = params.on_ok ? params.on_ok : null;
+            var on_cancel = params.on_cancel ? params.on_cancel : null;
+
+            var self = $(this);
+
+            self.attr("data-toggle", "modal");
+            self.attr("data-target", "#modal-dialog");
+            $.each(data_map, function(key, val) {
+                self.attr("data-" + key, val);
+            });
+
+            $("#modal-dialog").on('shown.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+
+                modal.find('.modal-title').text(title);
+                if (warning)
+                    modal.find('#modal-warning').html('<p class="alert-warning"><i class="fa fa-warning"></i>' + warning + '</p>');
+
+                $("#modal-texts").html("");
+                $.each(text_list, function(idx, val) {
+                    var line = "<p>" + val + "</p>";
+                    $("#modal-texts").append(line);
+                });
+
+                $("#modal-fields").html("");
+                $.each(field_map, function(label, field) {
+                    var lbl = '<label class="control-label">' + label + ': </label> ';
+                    $("#modal-fields").append(lbl).append(field).append("<br/>");
+                });
+                $.each(hidden_list, function(idx, field) {
+                    $("#modal-fields").append(field);
+                });
+
+                modal.find('#modal-ok').click(function (){
+                    if (on_ok) on_ok();
+                });
+
+                modal.find('#modal-cancel').click(function () {
+                    if (on_cancel) on_cancel();
+                });
+            });
+        };
+
+    </script>
+
+    <!-- End Modal Dialog -->
