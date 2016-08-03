@@ -1,5 +1,5 @@
     # call a comand with py virtualenv via popen
-    
+    # Not work well now. need tuning.
     
     def run_command_with_virtualenv(venv_path, commands, output, stop_event):
         environment = os.environ.copy()
