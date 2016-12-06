@@ -9,6 +9,12 @@ My code snippets
 ### /sh (shell)
 
 
+### /docker (docker scripts)
+
+* rabbit.sh
+To start a RabbitMQ docker container with official image.
+
+
 ### /js (javascript)
 
 #### modal-dialog.html
