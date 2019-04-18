@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# To switch brew installed Python 3 versions on MacOS
+# Script to switch brew installed Python 3 versions on MacOS
+# by Samuel Chen <samuel.net@gmail.com>
   
 # ref: https://stackoverflow.com/questions/51125013/how-can-i-install-a-previous-version-of-python-3-in-macos-using-homebrew/51125014#51125014
 
