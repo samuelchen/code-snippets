@@ -42,12 +42,9 @@ echo.
 echo clear
 
 
-call :Info "[info]"
-call :Error "[error]"
-call :Debug "[debug]"
-
-rem sentence will fail
-call :ColorText 0b "this is a sentence."
+call :Info "[info] this is information."
+call :Error "[error] an error message."
+call :Debug "[debug] trace log."
 
 goto :eof
 
@@ -55,17 +52,17 @@ goto :eof
 rem ---------- functions ----------
 
 :Debug
-call :ColorText 08 %~1
+call :ColorText 08 "%~1"
 echo.
 goto :eof
 
 :Info
-call :ColorText 0b %~1
+call :ColorText 0b "%~1"
 echo.
 goto :eof
 
 :Error
-call :ColorText 0c %~1
+call :ColorText 0c "%~1"
 echo.
 goto :eof
 
