@@ -41,11 +41,13 @@ echo.
 
 echo clear
 
-call :Info "[info] this is information."
 
-call :Error "[error] this is error message."
+call :Info "[info]"
+call :Error "[error]"
+call :Debug "[debug]"
 
-call :Debug "[debug] this is debug message."
+rem sentence will fail
+call :ColorText 0b "this is a sentence."
 
 goto :eof
 
