@@ -1,0 +1,21 @@
+[Unit]
+Description=VirtualBox Web Service
+After=network.target
+
+[Service]
+#Type=forking
+#ExecStart=/usr/lib/virtualbox/vboxweb-service.sh start
+#PIDFile=/run/vboxweb-service.sh
+
+ExecStart=/usr/bin/vboxwebsrv -H0.0.0.0
+ExecStartPre=/usr/bin/rm -f /home/vbox/vboxweb-service.pid
+PIDFile=/home/vbox/vboxweb-service.pid
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+User=vbox
+#Group=vboxusers
+
+[Install]
+WantedBy=multi-user.target
+Alias=vboxweb.service
