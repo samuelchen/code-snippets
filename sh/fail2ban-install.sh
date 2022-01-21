@@ -10,24 +10,27 @@ systemctl mask firewalld
 # setenforce 0
 
 
-yum install -y epel-release
-yum install -y fail2ban iptables-services
+dnf install -y epel-release
+dnf install -y fail2ban iptables-services
 
 IPTABLES_CONF=/etc/sysconfig/iptables
 SSH_JAIL_CONF=/etc/fail2ban/jail.d/ssh.conf
 
-sed -i '$d' $IPTABLES_CONF
-sed -i '$d' $IPTABLES_CONF
-sed -i '$d' $IPTABLES_CONF
+cp $IPTABLES_CONF ./iptables.bak
 
-cat << EOF >> $IPTABLES_CONF
--A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
--A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
--A INPUT -j REJECT --reject-with icmp-host-prohibited
--A FORWARD -j REJECT --reject-with icmp-host-prohibited
-COMMIT
-EOF
+#sed -i '$d' $IPTABLES_CONF
+#sed -i '$d' $IPTABLES_CONF
+#sed -i '$d' $IPTABLES_CONF
+
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 2222 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 4433 -j ACCEPT
+iptables -A INPUT -p tcp -m state --state NEW -m tcp --dport 315 -j ACCEPT
+iptables -A INPUT -j REJECT --reject-with icmp-host-prohibited
+iptables -A FORWARD -j REJECT --reject-with icmp-host-prohibited
+iptables-save > $IPTABLES_CONF
 
 cat << EOF > $SSH_JAIL_CONF
 [ssh-iptables]
